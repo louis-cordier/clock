@@ -4,13 +4,13 @@ from datetime import datetime
 
 while True:
     # Obtain current hour
-    c = datetime.now()
+        c = datetime.now()
     
     # Setting current time
-    current_time = c.strftime('%H:%M:%S')
+current_time = c.strftime('%H:%M:%S')
     
     # Erase previous message onboard for clearer display in terminal 
-    print('\rCurrent Time is:', current_time, end='')
+print('\rCurrent Time is:', current_time, end='')
     
     # Wait a second before reload
     time.sleep(1)
@@ -170,4 +170,4 @@ while True:
 #             print("Option invalide. Veuillez choisir à nouveau.")
 
 
-# --------- fin troisième test ----------------------------------#
+# --------- fin troisième test ----------------------------------
