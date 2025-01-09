@@ -20,7 +20,7 @@
 # time_label.pack()
 
 # day_label = Label(window,font=("Ink Free",25,"bold"))
-# day_label.pack()
+# day_label.pack()cls
 
 # date_label = Label(window,font=("Ink Free",30))
 # date_label.pack()
