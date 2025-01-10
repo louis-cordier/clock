@@ -150,12 +150,133 @@
 # --------------fin programm ok but french --------------
 # ----------begining programm ok and english ------------
 
-import time
+# import time
+# from threading import Thread
+# from os import system
+
+# # Global variables for the clock and alarm
+# current_time = (0, 0, 0)
+# alarm = None
+# clock_running = True
+# mode_24h = True
+# paused = False
+
+# # Function to display the current time
+# def display_time():
+#     hours, minutes, seconds = current_time
+#     if not mode_24h:
+#         suffix = "AM" if hours < 12 else "PM"
+#         hours = hours % 12 or 12
+#         return f"{hours:02}:{minutes:02}:{seconds:02} {suffix}"
+#     return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+# # Function to set the time
+# def set_time():
+#     global current_time, clock_running
+#     clock_running = False
+#     try:
+#         hours = int(input("Hours (0-23): "))
+#         minutes = int(input("Minutes (0-59): "))
+#         seconds = int(input("Seconds (0-59): "))
+#         if 0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60:
+#             current_time = (hours, minutes, seconds)
+#         else:
+#             print("Invalid values.")
+#     except ValueError:
+#         print("Invalid input.")
+#     clock_running = True
+
+# # Function to set the alarm
+# def set_alarm():
+#     global alarm
+#     try:
+#         hours = int(input("Alarm hours (0-23): "))
+#         minutes = int(input("Alarm minutes (0-59): "))
+#         seconds = int(input("Alarm seconds (0-59): "))
+#         if 0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60:
+#             alarm = (hours, minutes, seconds)
+#             print(f"Alarm set for {hours:02}:{minutes:02}:{seconds:02}")
+#         else:
+#             print("Invalid values.")
+#     except ValueError:
+#         print("Invalid input.")
+
+# # Function to pause the clock
+# def pause_clock():
+#     global paused
+#     paused = True
+
+# # Function to resume the clock after pause
+# def resume_clock():
+#     global paused
+#     paused = False
+
+# # Main function to update the time every second
+# def clock():
+#     global current_time, clock_running, paused
+#     while True:
+#         if clock_running and not paused:
+#             hours, minutes, seconds = current_time
+#             seconds += 1
+#             if seconds == 60:
+#                 seconds = 0
+#                 minutes += 1
+#             if minutes == 60:
+#                 minutes = 0
+#                 hours += 1
+#             if hours == 24:
+#                 hours = 0
+#             current_time = (hours, minutes, seconds)
+#             if alarm == current_time:
+#                 print("\nAlarm! The current time matches the alarm time!")
+#         time.sleep(1)
+
+# # Start the clock in a separate thread
+# if __name__ == "__main__":
+#     clock_thread = Thread(target=clock, daemon=True)
+#     clock_thread.start()
+
+#     while True:
+#         system("cls" if system == "nt" else "clear")
+#         print(f"Current time: {display_time()}\n")
+#         print("Menu:")
+#         print("1- Set time")
+#         print("2- Set alarm")
+#         print("3- Toggle 12h/24h mode")
+#         print("4- Pause clock")
+#         print("5- Resume clock")
+#         print("6- Exit")
+#         choice = input("Choose an option: ")
+
+#         if choice == "1":
+#             set_time()
+#         elif choice == "2":
+#             set_alarm()
+#         elif choice == "3":
+#             mode_24h = not mode_24h
+#         elif choice == "4":
+#             pause_clock()
+#         elif choice == "5":
+#             resume_clock()
+#         elif choice == "6":
+#             break
+#         else:
+#             print("Invalid option.")
+
+#         time.sleep(1)
+
+
+# -----------end programm ok and english ---------------
+
+# -------------begin programm with display time and datetime ---------
+
+from datetime import datetime, timedelta
 from threading import Thread
 from os import system
+import time
 
 # Global variables for the clock and alarm
-current_time = (0, 0, 0)
+current_time = datetime.now()
 alarm = None
 clock_running = True
 mode_24h = True
@@ -163,12 +284,12 @@ paused = False
 
 # Function to display the current time
 def display_time():
-    hours, minutes, seconds = current_time
+    now = current_time
     if not mode_24h:
-        suffix = "AM" if hours < 12 else "PM"
-        hours = hours % 12 or 12
-        return f"{hours:02}:{minutes:02}:{seconds:02} {suffix}"
-    return f"{hours:02}:{minutes:02}:{seconds:02}"
+        suffix = "AM" if now.hour < 12 else "PM"
+        hours = now.hour % 12 or 12
+        return f"{hours:02}:{now.minute:02}:{now.second:02} {suffix}"
+    return now.strftime("%H:%M:%S")
 
 # Function to set the time
 def set_time():
@@ -179,7 +300,7 @@ def set_time():
         minutes = int(input("Minutes (0-59): "))
         seconds = int(input("Seconds (0-59): "))
         if 0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60:
-            current_time = (hours, minutes, seconds)
+            current_time = current_time.replace(hour=hours, minute=minutes, second=seconds)
         else:
             print("Invalid values.")
     except ValueError:
@@ -194,7 +315,7 @@ def set_alarm():
         minutes = int(input("Alarm minutes (0-59): "))
         seconds = int(input("Alarm seconds (0-59): "))
         if 0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60:
-            alarm = (hours, minutes, seconds)
+            alarm = current_time.replace(hour=hours, minute=minutes, second=seconds)
             print(f"Alarm set for {hours:02}:{minutes:02}:{seconds:02}")
         else:
             print("Invalid values.")
@@ -216,18 +337,9 @@ def clock():
     global current_time, clock_running, paused
     while True:
         if clock_running and not paused:
-            hours, minutes, seconds = current_time
-            seconds += 1
-            if seconds == 60:
-                seconds = 0
-                minutes += 1
-            if minutes == 60:
-                minutes = 0
-                hours += 1
-            if hours == 24:
-                hours = 0
-            current_time = (hours, minutes, seconds)
-            if alarm == current_time:
+            current_time += timedelta(seconds=1)
+            current_time = datetime.now()
+            if alarm and current_time.hour == alarm.hour and current_time.minute == alarm.minute and current_time.second == alarm.second:
                 print("\nAlarm! The current time matches the alarm time!")
         time.sleep(1)
 
@@ -240,30 +352,33 @@ if __name__ == "__main__":
         system("cls" if system == "nt" else "clear")
         print(f"Current time: {display_time()}\n")
         print("Menu:")
-        print("1- Set time")
-        print("2- Set alarm")
-        print("3- Toggle 12h/24h mode")
-        print("4- Pause clock")
-        print("5- Resume clock")
-        print("6- Exit")
+        print("1- Display current time")
+        print("2- Set time")
+        print("3- Set alarm")
+        print("4- Toggle 12h/24h mode")
+        print("5- Pause clock")
+        print("6- Resume clock")
+        print("7- Exit")
         choice = input("Choose an option: ")
 
         if choice == "1":
-            set_time()
+            print(f"Current time: {display_time()}")
+            input("Press Enter to return to the menu...")
         elif choice == "2":
-            set_alarm()
+            set_time()
         elif choice == "3":
-            mode_24h = not mode_24h
+            set_alarm()
         elif choice == "4":
-            pause_clock()
+            mode_24h = not mode_24h
         elif choice == "5":
-            resume_clock()
+            pause_clock()
         elif choice == "6":
+            resume_clock()
+        elif choice == "7":
             break
         else:
             print("Invalid option.")
 
         time.sleep(1)
 
-
-# -----------end programm ok and english ---------------
+# --------------end programm with display time and datetime ------
